@@ -11,7 +11,7 @@ module.exports = (grunt) ->
 
   grunt.registerMultiTask "ftpush", "Mirror code over FTP", (target) ->
     done = @async()
-    
+
     auth = (key) ->
       if grunt.file.exists(".ftppass")
         config = grunt.file.read(".ftppass")
@@ -24,10 +24,11 @@ module.exports = (grunt) ->
     credentials = if @data.auth.authKey then auth(@data.auth.authKey) else auth(@data.auth.host)
     exclusions  = @data.exclusions || []
     keep        = @data.keep || []
-    cachePath = @data.cachePath || Path.join(".grunt", "ftpush", "#{@target}.json")   
+    cachePath = @data.cachePath || Path.join(".grunt", "ftpush", "#{@target}.json")
     options     =
       useList: !!@data.useList
       remove:  !(grunt.option('simple') || @data.simple)
+      overrideExistingFiles: !!@data.overrideExistingFiles
 
     grunt.log.debug "Initializing synchronizer..."
 
@@ -57,6 +58,8 @@ module.exports = (grunt) ->
       grunt.log.debug "#{Object.keys(@localFiles).length} paths found"
 
       @remove = options.remove
+
+			@overrideExistingFiles
 
       @ftp = new FTP
         host: @auth.host
@@ -110,12 +113,13 @@ module.exports = (grunt) ->
 
           commands = []
           files    = @findLocallyModified()
-
+          remoteFiles = @remoteFileList()
           upload = (path, done) =>
             @touchRecursive Path.join(@remoteRoot, path), =>
               files[path].each (file) =>
-                commands.push (done) =>
-                  @upload file.name, path, file.hash, done
+                if file.name not in remoteFiles || @overrideExistingFiles
+                    commands.push (done) =>
+                      @upload file.name, path, file.hash, done
               done()
 
           async.each Object.keys(files), upload, =>
@@ -141,10 +145,10 @@ module.exports = (grunt) ->
 
     buildTree: (root=@localRoot, result={}) ->
       result[Path.sep] ||= []
-      
+
       unless grunt.file.exists(root)
-        grunt.fatal "#{root} is not an existing location"  
-      
+        grunt.fatal "#{root} is not an existing location"
+
       for filename in FS.readdirSync(root)
         path = Path.join(root, filename)
 
@@ -171,6 +175,16 @@ module.exports = (grunt) ->
             changed[path].push file
 
       changed
+
+    remoteFileList : ->
+      remoteFileList = []
+
+      @ftp.ls @remoteRoot , (err, result) =>
+        for file in result
+            if file? && file.name?
+              remoteFileList.push file.name
+
+      remoteFileList
 
     diff: (path, callback) ->
       localFiles = @localFiles[path]
@@ -230,7 +244,7 @@ module.exports = (grunt) ->
             grunt.log.ok "New remote folder created " + path.yellow
 
           callback([])
-    
+
     upload: (basename, path, hash, callback) ->
       grunt.log.debug "Upload", util.inspect(basename), util.inspect(path), util.inspect(hash)
 

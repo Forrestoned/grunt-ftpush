@@ -57,6 +57,7 @@ ftpush: {
     keep: ['/important/images/at/server/*.jpg'],
     simple: false,
     useList: false,
+		overrideExistingFiles: false,
     cachePath: 'path/to/cache/folder/any_name.json'
   }
 }
@@ -73,6 +74,7 @@ The possible parameters of the configuration are:
 - **keep** - an array of paths that should be kept on the server even when they are not presented locally. The definitions should be relative to `dest`.
 - **simple** - if set to `true`, task will upload modified files and quit, it will NOT remove redundant files and directories at the server side.
 - **useList** - if set to `true`, FTP client will be enforced to use LIST command instead of STAT (that is not supported by some of servers)
+- **overrideExistingFiles** - if set to `true` task will try to override existing filens on server.
 - **cachePath** - optional local path of file that will store all hashes of already uploaded files. If no path is specified, will use default path '.grunt/ftpush/{taskName}.json
 
 ## Options

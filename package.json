@@ -1,18 +1,18 @@
 {
   "name": "grunt-ftpush",
-  "description": "Incrementally deploy data over the FTP protocol",
-  "version": "0.3.3",
-  "homepage": "https://github.com/inossidabile/grunt-ftpush",
+  "description": "fork of the original grunt-ftpush",
+  "version": "0.0.1",
+  "homepage": "https://github.com/Forrestoned/grunt-ftpush",
   "author": {
-    "name": "Boris Staal",
-    "email": "boris@staal.io"
+    "name": "Foresti Federico",
+    "email": "federico.foresti@ynap.com"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/inossidabile/grunt-ftpush.git"
+    "url": "git://github.com/Forrestoned/grunt-ftpush.git"
   },
   "bugs": {
-    "url": "https://github.com/inossidabile/grunt-ftpush/issues"
+    "url": "https://github.com/Forrestoned/grunt-ftpush/issues"
   },
   "engines": {
     "node": "*"

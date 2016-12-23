@@ -59,7 +59,7 @@ module.exports = (grunt) ->
 
       @remove = options.remove
 
-			@overrideExistingFiles
+      @overrideExistingFiles = options.overrideExistingFiles
 
       @ftp = new FTP
         host: @auth.host

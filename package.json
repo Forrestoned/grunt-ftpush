@@ -1,7 +1,7 @@
 {
   "name": "grunt-ftpush",
   "description": "fork of the original grunt-ftpush",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/Forrestoned/grunt-ftpush",
   "author": {
     "name": "Foresti Federico",
